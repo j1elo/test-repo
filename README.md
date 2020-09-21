@@ -12,23 +12,23 @@ lines.
 
 Checklist:
 
-- [] First item.
+- [ ] First item.
   <!-- You can read about it here:
   https://www.example.com/
   -->
 
-- [] Second item.
-- [] Third item.
+- [ ] Second item.
+- [ ] Third item.
 
 ## Things to test
 
 Projects:
 
-- [] Using the Projects feature as an ordered backlog of pending issues.
-- [] Using the Projects feature as an ordered backlog of pending pull requests.
+- [ ] Using the Projects feature as an ordered backlog of pending issues.
+- [ ] Using the Projects feature as an ordered backlog of pending pull requests.
 
 Actions:
 
-- [] Post a "thank you" message on issues and pr, explaining the workflow.
-- [] Check if new issues or pr follow the mandatory template.
+- [ ] Post a "thank you" message on issues and pr, explaining the workflow.
+- [ ] Check if new issues or pr follow the mandatory template.
   - If they don't, close with a message explaining why.
