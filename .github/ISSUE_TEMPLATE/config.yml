@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Support
+    url: https://www.example.com/support/community/
+    about: The community is full of people able to help. But keep in mind they're doing it in their own free time!
+  - name: Commercial Support
+    url: https://www.example.com/support/commercial/
+    about: We provide priority support and consulting services. Contact us and we'll find a solution to your problem.
