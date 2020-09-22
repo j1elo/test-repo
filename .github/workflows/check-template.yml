@@ -18,15 +18,17 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-close-message: >
             Hello @${issue.user.login} :wave:! Thanks a lot for reporting an
-            issue after finding a bug in Kurento.
+            issue after finding a bug.
 
 
-            However, we cannot accept your report and it is being automatically
-            closed, because **it doesn't follow the issue template**.
+            However, **your report doesn't follow the [issue template]**, so it
+            is being automatically closed.
+            [issue template]: https://github.com/j1elo/test-repo/blob/master/.github/ISSUE_TEMPLATE/bug_report.md
 
 
-            We need all reports to follow the template, because it helps us to
-            understand and categorize issues. Please, create a new issue and
-            follow the template, or reopen this same issue to edit and provide
-            all required information.
-          issue-pattern: /Describe.*Reproduce/gs
+            We are really sorry for that, but we need all reports to follow the
+            template, or else it won't be possible to understand and categorize
+            all issues.
+
+            Please, create a new issue following the template, or reopen this
+            same issue to edit and provide all required information.
