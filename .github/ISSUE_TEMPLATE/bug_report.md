@@ -10,6 +10,8 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+* [] I agree to fill this issue template.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
