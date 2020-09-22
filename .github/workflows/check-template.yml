@@ -16,6 +16,7 @@ jobs:
         uses: roots/issue-closer@v1.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-pattern: '/.*Describe.*Reproduce.*/gs'
           issue-close-message: >
             Hello @${issue.user.login} :wave:! Thanks a lot for reporting an
             issue after finding a bug.
@@ -26,6 +27,6 @@ jobs:
             but we need all reports to follow the template, or else it won't be
             possible to understand and help with all issues.
 
+
             Please, create a new issue following the template, or reopen this
             same issue to edit and provide all required information.
-          issue-pattern: '/.*Describe.*Reproduce.*/gs'
