@@ -11,88 +11,58 @@ on:
     types: [opened]
 
 jobs:
-  handle-issue:
-    name: Handle Issue
+  # Close the issue if its body doesn't match a regular expression.
+  check-template:
+    name: Check Template
     runs-on: ubuntu-latest
 
     steps:
-      # Close the issue if its body doesn't match a regular expression.
-      # - id: check-template
-      #   if: false
-      #   name: Issue auto-closer
-      #   uses: roots/issue-closer-action@v1.1
-      #   with:
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     issue-pattern: '\[[xX]\] I agree to fill this issue template'
-      #     issue-close-message: >
-      #       Hello @${issue.user.login} :wave:! Thanks a lot for reporting an
-      #       issue after finding a bug.
-
-
-      #       However, **your report doesn't follow the [issue template](https://github.com/j1elo/test-repo/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)**,
-      #       so it is being automatically closed. We are really sorry for that,
-      #       but we need all reports to follow the template, or else it won't be
-      #       possible to understand and help with all issues.
-
-
-      #       Please, create a new issue following the template, or reopen this
-      #       same issue to edit and provide all required information.
-
-      # - id: get-state
-      #   name: Get State
-      #   uses: octokit/request-action@v2.x
-      #   with:
-      #     route: GET /repos/:owner/:repo/issues/:issue_number
-      #     owner: ${{ github.event.repository.owner.login }}
-      #     repo: ${{ github.event.repository.name }}
-      #     issue_number: ${{ github.event.issue.number }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - id: print-jjj-1
-      #   name: PRINT JJJ 1
-      #   env:
-      #     ISSUE_STATE: ${{ steps.get-state.outputs.data }}
-      #   run: echo "JJJ 1 SOME TEXT, state data is $ISSUE_STATE"
-      # - id: print-jjj-2
-      #   if: ${{ fromJson(steps.get-state.outputs.data).state == 'open' }}
-      #   name: PRINT JJJ 2
-      #   run: echo "JJJ 2 SOME TEXT"
-
-      # - name: Dump GitHub context
-      #   env:
-      #     GITHUB_CONTEXT: ${{ toJson(github) }}
-      #   run: echo "$GITHUB_CONTEXT"
-      # - name: Dump job context
-      #   env:
-      #     JOB_CONTEXT: ${{ toJson(job) }}
-      #   run: echo "$JOB_CONTEXT"
-      # - name: Dump steps context
-      #   env:
-      #     STEPS_CONTEXT: ${{ toJson(steps) }}
-      #   run: echo "$STEPS_CONTEXT"
-      # - name: Dump runner context
-      #   env:
-      #     RUNNER_CONTEXT: ${{ toJson(runner) }}
-      #   run: echo "$RUNNER_CONTEXT"
-      # - name: Dump strategy context
-      #   env:
-      #     STRATEGY_CONTEXT: ${{ toJson(strategy) }}
-      #   run: echo "$STRATEGY_CONTEXT"
-      # - name: Dump matrix context
-      #   env:
-      #     MATRIX_CONTEXT: ${{ toJson(matrix) }}
-      #   run: echo "$MATRIX_CONTEXT"
-      # - name: Dump needs context
-      #   env:
-      #     NEEDS_CONTEXT: ${{ toJson(needs) }}
-      #   run: echo "$NEEDS_CONTEXT"
-
-      # Add the issue to the "Triage" Project Baord.
-      # https://github.com/marketplace/actions/github-project-automation
-      - id: add-issue
-        name: GitHub Project Automation+
-        uses: alex-page/github-project-automation-plus@v0.3.0
+      # https://github.com/marketplace/actions/issue-auto-closer
+      - name: Issue auto-closer
+        uses: roots/issue-closer-action@v1.1
         with:
-          repo-token: ${{ secrets.PROJECTS_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-pattern: '\[[xX]\] I agree to fill this issue template'
+          issue-close-message: >
+            Hello @${issue.user.login} :wave:! Thanks a lot for reporting an
+            issue after finding a bug.
+
+
+            However, **your report doesn't follow the [issue template](https://github.com/j1elo/test-repo/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)**,
+            so it is being automatically closed. We are really sorry for that,
+            but we need all reports to follow the template, or else it won't be
+            possible to understand and help with all issues.
+
+
+            Please, create a new issue following the template, or reopen this
+            same issue to edit and provide all required information.
+
+  # Add the issue to the "Triage" Project Board.
+  add-to-project:
+    name: Add to Project
+    runs-on: ubuntu-latest
+
+    # Wait for previous job to finish (disable parallel run).
+    needs: check-template
+
+    steps:
+      # https://github.com/marketplace/actions/github-api-request
+      - id: get-issue
+        name: Get Issue Data
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:owner/:repo/issues/:issue_number
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          issue_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # https://github.com/marketplace/actions/github-project-automation
+      - name: GitHub Project Automation+
+        uses: alex-page/github-project-automation-plus@v0.3.0
+        # Run only if "check-template" didn't close the issue.
+        if: ${{ fromJson(steps.get-issue.outputs.data).state == 'open' }}
+        with:
+          repo-token: ${{ secrets.NEW_ISSUE_TOKEN }}
           project: projectABCDE
-          column: Backlog Candidates
