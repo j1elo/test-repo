@@ -86,8 +86,9 @@ jobs:
         run: echo "$NEEDS_CONTEXT"
 
       # Add the issue to the "Triage" Project Baord.
-      # - name: GitHub Project Automation+
-      #   uses: alex-page/github-project-automation-plus@v0.3.0
-      #   with:
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     project: Triage
+      - id: add-issue
+        name: GitHub Project Automation+
+        uses: alex-page/github-project-automation-plus@v0.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          project: Triage
