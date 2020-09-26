@@ -66,3 +66,4 @@ jobs:
         with:
           repo-token: ${{ secrets.NEW_ISSUE_TOKEN }}
           project: projectABCDE
+          column: Backlog Candidates
