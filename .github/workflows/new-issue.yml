@@ -1,19 +1,24 @@
-# Automatically close issues if the body doesn't match our regular expression
+# Workflow syntax for GitHub Actions:
+# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
 
-name: Enforce issue template
+# Run some verification and organizative work on each newly opened issue.
+name: New Issue
 
-# Run when a new issue is created
-# roots/issue-closer action doesn't support other types
+# Run only when a new issue is opened.
+# (roots/issue-closer action doesn't support other event types)
 on:
   issues:
     types: [opened]
 
 jobs:
+  # Close the issue if its body doesn't match a regular expression.
   check-template:
+    name: Check Template
     runs-on: ubuntu-latest
+
     steps:
-      - name: Enforce issue template
-        uses: roots/issue-closer@v1.1
+      - name: Issue auto-closer
+        uses: roots/issue-closer-action@v1.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-pattern: '\[[xX]\] I agree to fill this issue template'
@@ -30,3 +35,17 @@ jobs:
 
             Please, create a new issue following the template, or reopen this
             same issue to edit and provide all required information.
+
+  # Add the issue to the "Triage" Project Baord.
+  # Runs only if "check-template" succeeded.
+  add-to-triage:
+    name: Add to Triage
+    runs-on: ubuntu-latest
+    needs: check-template
+
+    steps:
+      - name: GitHub Project Automation+
+        uses: alex-page/github-project-automation-plus@v0.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          project: Triage
