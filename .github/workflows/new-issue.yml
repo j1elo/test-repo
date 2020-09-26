@@ -11,13 +11,11 @@ on:
     types: [opened]
 
 jobs:
-
   handle-issue:
     name: Handle Issue
     runs-on: ubuntu-latest
 
     steps:
-
       # Close the issue if its body doesn't match a regular expression.
       - id: check-template
         name: Issue auto-closer
@@ -39,11 +37,23 @@ jobs:
             Please, create a new issue following the template, or reopen this
             same issue to edit and provide all required information.
 
+      - id: get-state
+        name: Get State
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:owner/:repo/issues/:issue_number
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
+          issue_number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - id: print-jjj-1
         name: PRINT JJJ 1
-        run: echo "JJJ 1 SOME TEXT"
+        env:
+          ISSUE_STATE: ${{ steps.get-state.outputs.data }}
+        run: echo "JJJ 1 SOME TEXT, state data is $ISSUE_STATE"
       - id: print-jjj-2
-        if: ${{ github.event.issue.state == 'open' }}
+        if: ${{ fromJson(steps.get-state.outputs.data).state == 'open' }}
         name: PRINT JJJ 2
         run: echo "JJJ 2 SOME TEXT"
       - name: Dump GitHub context
