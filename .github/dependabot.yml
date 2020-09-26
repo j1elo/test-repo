@@ -1,0 +1,14 @@
+# Enable GitHub Dependabot version updates for Actions.
+
+# Documentation:
+# https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Check for updates to GitHub Actions.
+  - package-ecosystem: "github-actions"
+    # "/" refers to workflows stored in `.github/workflows/`.
+    directory: "/"
+    schedule:
+      # Check for updates every Monday.
+      interval: "weekly"
