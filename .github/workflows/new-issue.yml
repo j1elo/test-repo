@@ -11,13 +11,16 @@ on:
     types: [opened]
 
 jobs:
-  # Close the issue if its body doesn't match a regular expression.
-  check-template:
-    name: Check Template
+
+  handle-issue:
+    name: Handle Issue
     runs-on: ubuntu-latest
 
     steps:
-      - name: Issue auto-closer
+
+      # Close the issue if its body doesn't match a regular expression.
+      - id: check-template
+        name: Issue auto-closer
         uses: roots/issue-closer-action@v1.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -36,16 +39,13 @@ jobs:
             Please, create a new issue following the template, or reopen this
             same issue to edit and provide all required information.
 
-  # Add the issue to the "Triage" Project Baord.
-  add-to-triage:
-    name: Add to Triage
-    runs-on: ubuntu-latest
-
-    # Run after "check-template", only if didn't close the issue.
-    needs: check-template
-    # if: ${{ github.event.issue.state == open }}
-
-    steps:
+      - id: print-jjj-1
+        name: PRINT JJJ 1
+        run: echo "JJJ 1 SOME TEXT"
+      - id: print-jjj-2
+        if: ${{ github.event.issue.state == 'open' }}
+        name: PRINT JJJ 2
+        run: echo "JJJ 2 SOME TEXT"
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -74,6 +74,8 @@ jobs:
         env:
           NEEDS_CONTEXT: ${{ toJson(needs) }}
         run: echo "$NEEDS_CONTEXT"
+
+      # Add the issue to the "Triage" Project Baord.
       # - name: GitHub Project Automation+
       #   uses: alex-page/github-project-automation-plus@v0.3.0
       #   with:
