@@ -12,8 +12,8 @@ on:
 
 jobs:
   # Verify that the issue is valid in form.
-  check-template:
-    name: Check Template
+  validate-issue:
+    name: Validate issue
     runs-on: ubuntu-latest
 
     steps:
@@ -25,11 +25,12 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-pattern: '\[[xX]\] I agree to fill this issue template'
           issue-close-message: >
-            Hello @${{ github.event.issue.user.login }} :wave:! we're sorry you
-            found a bug... thank you very much for reporting it.
+            Hello @${{ github.event.issue.user.login }}! :wave: we're sorry you
+            found a bug... so first of all, thank you very much for reporting
+            it.
 
 
-            However, **your report doesn't follow the [issue template](https://github.com/j1elo/test-repo/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)**,
+            However, **your report doesn't follow the [issue template](https://raw.githubusercontent.com/j1elo/test-repo/master/.github/ISSUE_TEMPLATE/bug_report.md)**,
             so it is being automatically closed. We are really sorry for that,
             but we need all reports to follow the template, or else it won't be
             possible to understand and help with all issues.
@@ -38,7 +39,7 @@ jobs:
             Please, create a new issue following the template, or reopen this
             same issue to edit and provide all required information.
 
-      # Get the current Issue data, to see if "check-template" closed it.
+      # Get the current Issue data, to see if "validate-issue" closed it.
       # https://github.com/marketplace/actions/github-api-request
       - id: get-issue
         name: Get Issue Data
@@ -51,39 +52,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Cancel the whole workflow if "check-template" closed the issue.
+      # Cancel the whole workflow if "validate-issue" closed the issue.
       # https://github.com/marketplace/actions/cancel-this-build
       - name: Cancel this build
         uses: andymckay/cancel-action@0.2
         if: ${{ fromJson(steps.get-issue.outputs.data).state == 'closed' }}
 
-  # Run the issue through some initial process.
-  process-issue:
-    name: Process Issue
+  # Accept the issue by sending a thank you message and sorting it.
+  accept-issue:
+    name: Accept issue
     runs-on: ubuntu-latest
 
     # Wait for previous job to finish (disable parallel run).
-    needs: check-template
+    needs: validate-issue
 
     steps:
-      # Add the issue to the incoming Triage project.
-      # https://github.com/marketplace/actions/github-project-automation
-      - name: GitHub Project Automation+
-        uses: alex-page/github-project-automation-plus@v0.3.0
-        with:
-          repo-token: ${{ secrets.NEW_ISSUE_TOKEN }}
-          project: projectABCDE
-          column: Backlog Candidates
-
-      # Add a thank you message.
+      # Add a welcome message.
       # https://github.com/marketplace/actions/create-or-update-comment
       - name: Create or Update Comment
         uses: peter-evans/create-or-update-comment@v1.4.3
         with:
           issue-number: ${{ github.event.issue.number }}
           body: >
-            Hello @${{ github.event.issue.user.login }} :wave:! we're sorry you
-            found a bug... thank you very much for reporting it.
+            Hello @${{ github.event.issue.user.login }}! :wave: we're sorry you
+            found a bug... so first of all, thank you very much for reporting
+            it.
 
 
             To know about progress, check in
@@ -93,3 +86,12 @@ jobs:
             until work priorities align and the issue is selected for
             development. It will then become part of our official
             [Backlog](https://github.com/users/j1elo/projects/1#column-10993299).
+
+      # Add new issues to the Triage project.
+      # https://github.com/marketplace/actions/github-project-automation
+      - name: GitHub Project Automation+
+        uses: alex-page/github-project-automation-plus@v0.3.0
+        with:
+          repo-token: ${{ secrets.NEW_ISSUE_TOKEN }}
+          project: Triage
+          column: Backlog Candidates
