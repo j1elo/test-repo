@@ -90,7 +90,7 @@ jobs:
       # Add new issues to the Triage project.
       # https://github.com/marketplace/actions/github-project-automation
       - name: GitHub Project Automation+
-        uses: alex-page/github-project-automation-plus@v0.3.0
+        uses: alex-page/github-project-automation-plus@v0.5.1
         with:
           repo-token: ${{ secrets.NEW_ISSUE_TOKEN }}
           project: Triage
