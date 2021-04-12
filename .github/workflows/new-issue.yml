@@ -70,7 +70,7 @@ jobs:
       # Add a welcome message.
       # https://github.com/marketplace/actions/create-or-update-comment
       - name: Create or Update Comment
-        uses: peter-evans/create-or-update-comment@v1.4.3
+        uses: peter-evans/create-or-update-comment@v1.4.5
         with:
           issue-number: ${{ github.event.issue.number }}
           body: >
