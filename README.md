@@ -2,6 +2,8 @@
 
 This is a test repository that I'll use to play with some of the GitHub features, to see what is the effect they have on the repo and on the User Interface.
 
+This is the `test-branch`.
+
 ## Markdown samples
 
 <!--
